@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
+		"strictNullChecks": true,
 		"target": "ES6",
 		"allowJs": true,
 		"module": "commonjs",

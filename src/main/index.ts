@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, nativeImage, Tray } from 'electron'
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
@@ -6,7 +6,7 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 require('electron-squirrel-startup') && app.quit()
 
 const createWindow = (): void => {
-	const window = new BrowserWindow({
+	window = new BrowserWindow({
 		height: 600,
 		width: 800,
 		webPreferences: {
@@ -18,8 +18,34 @@ const createWindow = (): void => {
 
 	window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 	window.webContents.openDevTools({ mode: 'detach' })
+
+	window.on('minimize', (event: Event) => {
+		event.preventDefault()
+		window?.hide()
+	})
+
+	window.on('close', (event: any) => {
+		if (!isQuiting) {
+			event.preventDefault()
+			window?.hide()
+		}
+		return false
+	})
+
+	const tray = new Tray(nativeImage.createFromPath('icon.png'))
+	tray.setIgnoreDoubleClickEvents(true)
+
+	tray.on('click', () => {
+		!window?.isVisible() && window?.show()
+	})
 }
 
+let window: BrowserWindow | null
+let isQuiting = false
+
 app.on('ready', createWindow)
+app.on('before-quit', () => (isQuiting = true))
 app.on('window-all-closed', () => process.platform !== 'darwin' && app.quit())
-app.on('activate', () => (!BrowserWindow.getAllWindows() ? createWindow() : BrowserWindow.getAllWindows()[0].show()))
+app.on('activate', () => (window ? window.show() : createWindow()))
+
+export { window }

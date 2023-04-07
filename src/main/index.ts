@@ -47,7 +47,7 @@ app.on('ready', async () => {
 	createWindow()
 
 	const clipboardService = new ClipboardService()
-	const dispatchService = new DispatchService()
+	const dispatchService = new DispatchService(clipboardService)
 	await clipboardService.readClipboard() // dump clipboard
 
 	setInterval(async () => {

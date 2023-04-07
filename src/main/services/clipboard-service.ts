@@ -3,6 +3,7 @@ import Clipboard, { File } from '../../types/clipboard'
 import archiver from 'archiver'
 import fs from 'fs'
 import path from 'path'
+import axios from 'axios'
 
 export default class ClipboardService {
 	private previous: Clipboard | null
@@ -34,6 +35,25 @@ export default class ClipboardService {
 			}
 		}
 		return null
+	}
+
+	public async writeClipboard(data: Clipboard): Promise<void> {
+		const content = data.content as string
+
+		if (data.type === 'file') {
+			const res = await axios.get('http://192.168.1.185:5046/fetch/' + content, {
+				responseType: 'stream'
+			})
+
+			const disposition = res.headers['content-disposition'] ?? content
+			const fileName = disposition.split(';')[1].replace('filename=', '').replace(/['"]+/g, '').trim()
+			const file = fs.createWriteStream('/Users/noahgreff/Desktop/' + fileName)
+
+			res.data.pipe(file)
+			file.on('finish', file.close)
+		} else {
+			clipboard.writeText(content)
+		}
 	}
 
 	private getFileContent(filePath: string): File {

@@ -1,6 +1,5 @@
 import { app, BrowserWindow, nativeImage, Tray } from 'electron'
-import DispatchService from './services/dispatch-service'
-import ClipboardService from './services/clipboard-service'
+import { startListening } from './services'
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
@@ -12,14 +11,13 @@ const createWindow = (): void => {
 		height: 600,
 		width: 800,
 		webPreferences: {
-			contextIsolation: false,
 			nodeIntegration: true,
 			preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
 		}
 	})
 
 	window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
-	// window.webContents.openDevTools({ mode: 'detach' })
+	window.webContents.openDevTools({ mode: 'detach' })
 
 	window.on('minimize', (event: Event) => {
 		event.preventDefault()
@@ -43,26 +41,18 @@ const createWindow = (): void => {
 let window: BrowserWindow | null
 let isQuiting = false
 
+app.dock.setIcon(nativeImage.createFromPath(app.getAppPath() + '/public/icon.png'))
+
 app.on('ready', async () => {
 	createWindow()
-
-	const clipboardService = new ClipboardService()
-	const dispatchService = new DispatchService(clipboardService)
-	await clipboardService.readClipboard() // dump clipboard
-
-	setInterval(async () => {
-		const clipboard = await clipboardService.readClipboard()
-
-		if (clipboard) {
-			dispatchService.sendClipboard(clipboard)
-		}
-	}, 100)
+	startListening(100)
 })
-
-app.dock.setIcon(nativeImage.createFromPath(app.getAppPath() + '/public/icon.png'))
 
 app.on('before-quit', () => (isQuiting = true))
 app.on('window-all-closed', () => process.platform !== 'darwin' && app.quit())
 app.on('activate', () => (window ? window.show() : createWindow()))
 
 export { window }
+
+import './handler/auth-handler'
+import './handler/store-handler'

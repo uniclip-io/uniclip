@@ -9,5 +9,10 @@ export const mainConfig: Configuration = {
 	},
 	resolve: {
 		extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
+	},
+	externals: {
+		debug: 'debug',
+		bufferutil: 'bufferutil',
+		'utf-8-validate': 'utf-8-validate'
 	}
 }

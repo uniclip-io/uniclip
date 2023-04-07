@@ -5,9 +5,6 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 
 require('electron-squirrel-startup') && app.quit()
 
-const icon = nativeImage.createFromPath(app.getAppPath() + '/public/icon.png')
-app.dock.setIcon(icon)
-
 const createWindow = (): void => {
 	window = new BrowserWindow({
 		height: 600,
@@ -35,7 +32,9 @@ const createWindow = (): void => {
 		return false
 	})
 
-	const tray = new Tray(icon.resize({ width: 16, height: 16 }))
+	const tray = new Tray(
+		nativeImage.createFromPath(app.getAppPath() + '/public/tray.png').resize({ width: 14, height: 14 })
+	)
 	tray.setIgnoreDoubleClickEvents(true)
 
 	tray.on('click', () => {
@@ -45,6 +44,8 @@ const createWindow = (): void => {
 
 let window: BrowserWindow | null
 let isQuiting = false
+
+app.dock.setIcon(nativeImage.createFromPath(app.getAppPath() + '/public/icon.png'))
 
 app.on('ready', createWindow)
 app.on('before-quit', () => (isQuiting = true))

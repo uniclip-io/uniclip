@@ -6,18 +6,28 @@
 	<style>
 		* {
 			box-sizing: border-box;
-			user-select: none;
 			margin: 0;
 			padding: 0;
+			user-select: none;
+			font-family: 'Roboto';
+		}
+
+		#dragarea {
+			position: absolute;
+			width: 100%;
+			height: 30px;
+			-webkit-app-region: drag;
 		}
 
 		#app {
 			position: absolute;
+			top: 30px;
 			width: 100%;
-			height: 100%;
+			height: calc(100% - 30px);
 		}
 	</style>
 	<body>
+		<span id="dragarea"></span>
 		<div id="app"></div>
 	</body>
 </html>

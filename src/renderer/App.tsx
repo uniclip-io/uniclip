@@ -1,7 +1,7 @@
 import React from 'react'
 import { useStore } from './context/store-provider'
-import Devices from './views/home/Devices'
-import Login from './views/Login'
+import Devices from './components/views/home/Devices'
+import Login from './components/views/Login'
 
 export default () => {
 	const { store } = useStore()

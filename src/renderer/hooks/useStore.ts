@@ -1,21 +1,25 @@
 import { useEffect, useState } from 'react'
+import { Schema } from '../../main/handler/store-handler'
 
-export const useStore = <T>(key: string): [T | null, (value: T) => Promise<void>] => {
-	// @ts-ignore
-	const [getter, setValue] = useState<T>(null)
+export const useStore = <T>(key: keyof typeof Schema, initial?: T): [T | null, (value: T) => Promise<void>] => {
+	const [getter, setValue] = useState<T | null>(null)
 
 	useEffect(() => {
-		fetch()
+		window.electron.onStoreChanged((k, value) => k === key && setValue(value))
+
+		if (initial) {
+			setter(initial)
+		} else {
+			fetch()
+		}
 	}, [key])
 
 	const fetch = async () => {
-		const value = await window.electron.getStoreData<T>(key)
-		setValue(value)
+		setValue(await window.electron.getStoreData<T>(key))
 	}
 
 	const setter = async (value: T) => {
 		await window.electron.setStoreData(key, value)
-		setValue(value)
 	}
 
 	return [getter, setter]

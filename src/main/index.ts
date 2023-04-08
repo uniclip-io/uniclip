@@ -47,7 +47,7 @@ app.dock.setIcon(nativeImage.createFromPath(app.getAppPath() + '/public/icon.png
 app.on('ready', async () => {
 	createWindow()
 	startListening(100)
-	authenticate()
+	// authenticate()
 })
 
 app.on('before-quit', () => (isQuiting = true))

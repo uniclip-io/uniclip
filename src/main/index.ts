@@ -18,7 +18,7 @@ const createWindow = (): void => {
 	})
 
 	window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
-	window.webContents.openDevTools({ mode: 'detach' })
+	// window.webContents.openDevTools({ mode: 'detach' })
 
 	window.on('minimize', (event: Event) => {
 		event.preventDefault()
@@ -33,7 +33,7 @@ const createWindow = (): void => {
 		return false
 	})
 
-	const icon = nativeImage.createFromPath(app.getAppPath() + '/public/tray.png')
+	const icon = nativeImage.createFromPath(app.getAppPath() + '/assets/tray.png')
 	const tray = new Tray(icon.resize({ width: 14, height: 14 }))
 	tray.setIgnoreDoubleClickEvents(true)
 	tray.on('click', () => !window?.isVisible() && window?.show())
@@ -42,7 +42,7 @@ const createWindow = (): void => {
 let window: BrowserWindow | null
 let isQuiting = false
 
-app.dock.setIcon(nativeImage.createFromPath(app.getAppPath() + '/public/icon.png'))
+app.dock.setIcon(nativeImage.createFromPath(app.getAppPath() + '/assets/icon.png'))
 
 app.on('ready', async () => {
 	createWindow()

@@ -11,6 +11,7 @@ const createWindow = (): void => {
 		height: 600,
 		width: 400,
 		resizable: false,
+		titleBarStyle: 'hiddenInset',
 		webPreferences: {
 			nodeIntegration: true,
 			preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
@@ -18,7 +19,7 @@ const createWindow = (): void => {
 	})
 
 	window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
-	// window.webContents.openDevTools({ mode: 'detach' })
+	window.webContents.openDevTools({ mode: 'detach' })
 
 	window.on('minimize', (event: Event) => {
 		event.preventDefault()

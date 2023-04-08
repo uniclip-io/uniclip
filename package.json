@@ -24,9 +24,11 @@
 		"electron-store": "^8.1.0",
 		"file-loader": "^6.2.0",
 		"google-auth-library": "^8.7.0",
+		"material-icons": "^1.13.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"server-destroy": "^1.0.1",
+		"typeface-roboto": "^1.1.13",
 		"ws": "^8.13.0"
 	},
 	"devDependencies": {

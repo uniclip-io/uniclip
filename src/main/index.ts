@@ -54,5 +54,4 @@ app.on('activate', () => (window ? window.show() : createWindow()))
 
 export { window }
 
-import './handler/store-handler'
-import './handler/auth-handler'
+import './handlers'

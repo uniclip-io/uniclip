@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Schema } from '../../main/handler/store-handler'
+import { Schema } from '../../main/handlers/store-handler'
 
 export const useStore = <T>(key: keyof typeof Schema, initial?: T): [T | null, (value: T) => Promise<void>] => {
 	const [getter, setValue] = useState<T | null>(null)

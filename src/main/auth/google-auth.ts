@@ -1,15 +1,13 @@
-import { OAuth2Client } from 'google-auth-library'
+import { OAuth2Client, Credentials } from 'google-auth-library'
 import destroyer from 'server-destroy'
 import http from 'http'
 import url from 'url'
 import open from 'open'
 
-export const authenticate = async () => {
+export const getUserCredentials = async (): Promise<Credentials> => {
 	const client = await getAuthenticatedClient()
-	const url = 'https://www.googleapis.com/auth/userinfo.profile'
-	await client.request({ url })
-	const tokenInfo = await client.getTokenInfo(client.credentials.access_token ?? '')
-	console.log(tokenInfo)
+	await client.request({ url: 'https://www.googleapis.com/auth/userinfo.profile' })
+	return client.credentials
 }
 
 const getAuthenticatedClient = (): Promise<OAuth2Client> => {
@@ -21,8 +19,9 @@ const getAuthenticatedClient = (): Promise<OAuth2Client> => {
 		)
 
 		const authorizeUrl = oAuth2Client.generateAuthUrl({
+			scope: 'https://www.googleapis.com/auth/userinfo.profile',
 			access_type: 'offline',
-			scope: 'https://www.googleapis.com/auth/userinfo.profile'
+			prompt: 'select_account'
 		})
 
 		const server = http.createServer(async (req, res) => {

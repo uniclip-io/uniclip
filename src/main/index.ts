@@ -9,7 +9,8 @@ require('electron-squirrel-startup') && app.quit()
 const createWindow = (): void => {
 	window = new BrowserWindow({
 		height: 600,
-		width: 800,
+		width: 400,
+		resizable: false,
 		webPreferences: {
 			nodeIntegration: true,
 			preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY

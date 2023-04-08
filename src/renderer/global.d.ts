@@ -7,7 +7,7 @@ declare global {
 			getStoreData: <T>(key: string) => Promise<T>
 			setStoreData: (key: string, value: any) => Promise<T>
 			onStoreChanged: (callback: (key: string, value: any) => void) => Promise<void>
-			login: () => Promise<Credentials>
+			login: () => Promise<void>
 			logout: () => Promise<void>
 		}
 	}

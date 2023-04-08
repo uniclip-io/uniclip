@@ -1,5 +1,6 @@
 import { app, BrowserWindow, nativeImage, Tray } from 'electron'
 import { startListening } from './services'
+import { authenticate } from './auth/google-auth'
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
@@ -46,6 +47,7 @@ app.dock.setIcon(nativeImage.createFromPath(app.getAppPath() + '/public/icon.png
 app.on('ready', async () => {
 	createWindow()
 	startListening(100)
+	authenticate()
 })
 
 app.on('before-quit', () => (isQuiting = true))

@@ -9,7 +9,7 @@ export default class DispatchService {
 
 	constructor(clipboardService: ClipboardService) {
 		this.clipboardService = clipboardService
-		this.client = new WebSocket('ws://192.168.1.185:8000')
+		this.client = new WebSocket('ws://127.0.0.1:8000')
 		this.client.on('message', this.receiveClipboard.bind(this))
 	}
 
@@ -19,7 +19,7 @@ export default class DispatchService {
 			const form = new FormData()
 			form.append('file', file.blob, file.name)
 
-			const res = await axios.post('http://192.168.1.185:5046/store', form)
+			const res = await axios.post('http://127.0.0.1:5046/store', form)
 			const message = { type: 'file', content: res.data }
 			this.client.send(JSON.stringify(message))
 		} else {

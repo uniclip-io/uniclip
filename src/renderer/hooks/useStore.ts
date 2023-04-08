@@ -6,16 +6,20 @@ export const useStore = <T>(key: keyof typeof Schema, initial?: T): [T | null, (
 
 	useEffect(() => {
 		window.electron.onStoreChanged((k, value) => k === key && setValue(value))
+	}, [])
 
-		if (initial) {
-			setter(initial)
-		} else {
-			fetch()
-		}
+	useEffect(() => {
+		init()
 	}, [key])
 
-	const fetch = async () => {
-		setValue(await window.electron.getStoreData<T>(key))
+	const init = async () => {
+		const value = await window.electron.getStoreData<T>(key)
+
+		if (value) {
+			setValue(value)
+		} else if (initial) {
+			setter(initial)
+		}
 	}
 
 	const setter = async (value: T) => {

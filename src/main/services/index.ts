@@ -7,8 +7,6 @@ const dispatchService = new DispatchService(clipboardService)
 let timer: NodeJS.Timer | null
 
 export const startListening = async (interval: number) => {
-	await clipboardService.readClipboard() // dump clipboard
-
 	timer = setInterval(async () => {
 		const clipboard = await clipboardService.readClipboard()
 

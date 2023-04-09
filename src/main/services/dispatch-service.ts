@@ -1,6 +1,8 @@
 import { WebSocket } from 'ws'
-import Clipboard, { File } from '../../types/clipboard'
+import Clipboard, { ClipboardLog, File } from '../../types/clipboard'
+import { Direction } from '../../types/message'
 import ClipboardService from './clipboard-service'
+import { getValue, setValue } from '../handlers/store-handler'
 import axios from 'axios'
 
 export default class DispatchService {
@@ -14,21 +16,30 @@ export default class DispatchService {
 	}
 
 	public async sendClipboard(data: Clipboard) {
-		if (data.type === 'file') {
+		if (data.type !== 'text') {
 			const file = data.content as File
 			const form = new FormData()
 			form.append('file', file.blob, file.name)
 
 			const res = await axios.post('http://127.0.0.1:5046/store', form)
-			const message = { type: 'file', content: res.data }
+			const message = { type: data.type, content: res.data }
 			this.client.send(JSON.stringify(message))
+			this.logClipboard(message, 'outbound')
 		} else {
 			this.client.send(JSON.stringify(data))
+			this.logClipboard(data, 'outbound')
 		}
 	}
 
 	private async receiveClipboard(message: string) {
 		const data = JSON.parse(message) as Clipboard
+		this.logClipboard(data, 'inbound')
 		await this.clipboardService.writeClipboard(data)
+	}
+
+	private logClipboard(clipboard: Clipboard, direction: Direction) {
+		const history = getValue<ClipboardLog[]>('clipboard') ?? []
+		const log = { clipboard, direction: direction }
+		setValue('clipboard', [...history, log])
 	}
 }

@@ -21,11 +21,7 @@ export default class ClipboardService {
 			if (!this.previous || this.previous.type !== 'file' || this.previous.content !== filePath) {
 				this.previous = { type: 'file', content: filePath }
 
-				const content = fs.lstatSync(filePath).isDirectory()
-					? await this.getDirectoryContent(filePath)
-					: this.getFileContent(filePath)
-
-				return { type: 'file', content }
+				return fs.lstatSync(filePath).isDirectory() ? await this.getDirectoryContent(filePath) : this.getFileContent(filePath)
 			}
 		} else {
 			const content = clipboard.readText()
@@ -40,7 +36,7 @@ export default class ClipboardService {
 	public async writeClipboard(data: Clipboard): Promise<void> {
 		const content = data.content as string
 
-		if (data.type === 'file') {
+		if (data.type !== 'text') {
 			const res = await axios.get('http://192.168.1.185:5046/fetch/' + content, {
 				responseType: 'stream'
 			})
@@ -56,13 +52,17 @@ export default class ClipboardService {
 		}
 	}
 
-	private getFileContent(filePath: string): File {
-		const name = path.basename(filePath)
-		const blob = new Blob([fs.readFileSync(filePath)])
-		return { name, blob }
+	private getFileContent(filePath: string): Clipboard {
+		return {
+			type: 'file',
+			content: {
+				name: path.basename(filePath),
+				blob: new Blob([fs.readFileSync(filePath)])
+			}
+		}
 	}
 
-	private async getDirectoryContent(directoryPath: string): Promise<File> {
+	private async getDirectoryContent(directoryPath: string): Promise<Clipboard> {
 		return new Promise(async resolve => {
 			const name = path.basename(directoryPath) + '.zip'
 			const outputFile = path.join(process.cwd(), name)
@@ -73,7 +73,14 @@ export default class ClipboardService {
 			output.on('close', () => {
 				const blob = new Blob([fs.readFileSync(outputFile)])
 				fs.unlinkSync(outputFile)
-				resolve({ name, blob })
+
+				resolve({
+					type: 'folder',
+					content: {
+						name,
+						blob
+					}
+				})
 			})
 
 			archive.pipe(output)

@@ -1,19 +1,19 @@
 import { app, clipboard } from 'electron'
 import Clipboard, { File } from '../../types/clipboard'
 import clipboardFiles from 'electron-clipboard-ex'
+import { download } from '../../apis/content-service'
 import archiver from 'archiver'
 import unzipper from 'unzipper'
 import fs from 'fs-extra'
 import path from 'path'
-import axios from 'axios'
 
 export default class ClipboardService {
-	private readonly tempDirectory = path.join(app.getAppPath(), 'temp')
+	private readonly tempDir = path.join(app.getAppPath(), 'temp')
 	private previous: string
 
 	constructor() {
-		if (!fs.existsSync(this.tempDirectory)) {
-			fs.mkdirpSync(this.tempDirectory)
+		if (!fs.existsSync(this.tempDir)) {
+			fs.mkdirpSync(this.tempDir)
 		}
 		this.previous = clipboard.readText()
 	}
@@ -27,7 +27,7 @@ export default class ClipboardService {
 
 			if (files.length > 0) {
 				return new Promise(async resolve => {
-					const outputFile = path.join(this.tempDirectory, 'temp.zip')
+					const outputFile = path.join(this.tempDir, 'temp.zip')
 					const output = fs.createWriteStream(outputFile)
 					const archive = archiver('zip', { zlib: { level: 9 } })
 
@@ -35,7 +35,9 @@ export default class ClipboardService {
 						const blob = new Blob([fs.readFileSync(outputFile)])
 						fs.unlinkSync(outputFile)
 
-						const type = files.length > 1 ? 'diverse' : fs.lstatSync(files[0]).isDirectory() ? 'folder' : 'file'
+						// prettier-ignore
+						const type =files.length > 1 ? 'diverse': fs.lstatSync(files[0]).isDirectory() ? 'folder' : 'file'
+						// prettier-ignore
 						const name = type === 'diverse' ? 'Files & Folders' : path.basename(files[0])
 
 						resolve({
@@ -73,13 +75,11 @@ export default class ClipboardService {
 
 	public async writeClipboard(data: Clipboard): Promise<void> {
 		if (data.type !== 'text') {
-			await fs.emptyDir(this.tempDirectory)
+			await fs.emptyDir(this.tempDir)
 			const { contentId, name } = data.content as File
-			const outputAs = data.type === 'diverse' ? this.tempDirectory : path.join(this.tempDirectory, name)
+			const outputAs = data.type === 'diverse' ? this.tempDir : path.join(this.tempDir, name)
 
-			const res = await axios.get('http://192.168.1.185:5046/fetch/' + contentId, {
-				responseType: 'stream'
-			})
+			const res = await download(contentId!)
 
 			const stream = unzipper.Extract({ path: outputAs })
 			stream.on('close', () => {
@@ -87,7 +87,7 @@ export default class ClipboardService {
 				clipboardFiles.writeFilePaths(paths)
 				this.previous = clipboard.readText()
 			})
-			res.data.pipe(stream)
+			res.pipe(stream)
 		} else {
 			clipboard.writeText(data.content as string)
 		}

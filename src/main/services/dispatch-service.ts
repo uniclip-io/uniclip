@@ -3,7 +3,7 @@ import Clipboard, { ClipboardLog, File } from '../../types/clipboard'
 import { Direction } from '../../types/message'
 import ClipboardService from './clipboard-service'
 import { getValue, setValue } from '../handlers/store-handler'
-import axios from 'axios'
+import { upload } from '../../apis/content-service'
 
 export default class DispatchService {
 	private readonly clipboardService: ClipboardService
@@ -21,8 +21,8 @@ export default class DispatchService {
 			const form = new FormData()
 			form.append('file', file.blob!, file.name)
 
-			const res = await axios.post('http://127.0.0.1:5046/store', form)
-			const content = { contentId: res.data, name: file.name }
+			const contentId = await upload(file)
+			const content = { contentId, name: file.name }
 			const message = { type: data.type, content }
 
 			this.client.send(JSON.stringify(message))

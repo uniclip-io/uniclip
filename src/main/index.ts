@@ -57,5 +57,3 @@ app.on('activate', () => (window ? window.show() : createWindow()))
 export { window }
 
 import './handlers'
-
-require('./handlers/store-handler').setValue('clipboard', [])

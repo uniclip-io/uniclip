@@ -19,7 +19,7 @@ const createWindow = (): void => {
 	})
 
 	window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
-	// window.webContents.openDevTools({ mode: 'detach' })
+	window.webContents.openDevTools({ mode: 'detach' })
 
 	window.on('minimize', (event: Event) => {
 		event.preventDefault()

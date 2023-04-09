@@ -5,21 +5,21 @@ import ClipboardWidget from '../widgets/ClipboardWidget'
 import './ClipboardHistory.css'
 
 export default () => {
-	const listRef = useRef(null)
+	const bottom = useRef<HTMLDivElement>(null)
 	const { store } = useStore()
 
 	useEffect(() => {
-		// @ts-ignore
-		listRef.current.scrollTop = listRef.current.scrollHeight
+		bottom.current?.scrollIntoView({ behavior: 'smooth' })
 	}, [store.clipboard])
 
 	return (
 		<div className="clipboard-histroy-container">
 			<h2>Clipboard</h2>
-			<div ref={listRef} className="clipboard-histroy-list">
+			<div className="clipboard-histroy-list">
 				{store.clipboard.map((log: ClipboardLog) => (
 					<ClipboardWidget key={Math.random()} {...log} />
 				))}
+				<div ref={bottom} />
 			</div>
 		</div>
 	)

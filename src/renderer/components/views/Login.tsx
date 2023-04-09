@@ -1,7 +1,7 @@
 import React from 'react'
-import './Login.css'
 // @ts-ignore
 import logo from '../../../../assets/logo.png'
+import './Login.css'
 
 export default () => {
 	return (

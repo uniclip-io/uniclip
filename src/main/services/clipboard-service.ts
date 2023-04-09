@@ -2,14 +2,19 @@ import { app, clipboard } from 'electron'
 import Clipboard, { File } from '../../types/clipboard'
 import clipboardFiles from 'electron-clipboard-ex'
 import archiver from 'archiver'
-import fs from 'fs'
+import unzipper from 'unzipper'
+import fs from 'fs-extra'
 import path from 'path'
 import axios from 'axios'
 
 export default class ClipboardService {
+	private readonly outputDir = path.join(app.getAppPath(), 'temp')
 	private previous: string
 
 	constructor() {
+		if (!fs.existsSync(this.outputDir)) {
+			fs.mkdirpSync(this.outputDir)
+		}
 		this.previous = clipboard.readText()
 	}
 
@@ -28,7 +33,7 @@ export default class ClipboardService {
 
 					output.on('close', () => {
 						const blob = new Blob([fs.readFileSync(outputFile)])
-						// fs.unlinkSync(outputFile)
+						fs.unlinkSync(outputFile)
 
 						resolve({
 							type: files.length > 1 || fs.lstatSync(files[0]).isDirectory() ? 'folder' : 'file',
@@ -60,18 +65,20 @@ export default class ClipboardService {
 
 	public async writeClipboard(data: Clipboard): Promise<void> {
 		if (data.type !== 'text') {
-			const { contentId, name } = data.content as File
-			const outputFile = path.join(app.getPath('downloads'), 'temp.zip')
-			const res = await axios.get('http://192.168.1.185:5046/fetch/' + contentId, {
+			await fs.emptyDir(this.outputDir)
+			const file = data.content as File
+
+			const res = await axios.get('http://192.168.1.185:5046/fetch/' + file.contentId, {
 				responseType: 'stream'
 			})
 
-			const file = fs.createWriteStream(outputFile)
-			file.on('close', () => {
-				file.close()
-				clipboardFiles.writeFilePaths([outputFile])
+			const stream = unzipper.Extract({ path: this.outputDir })
+			stream.on('close', () => {
+				const paths = fs.readdirSync(this.outputDir).map(p => path.join(this.outputDir, p))
+				clipboardFiles.writeFilePaths(paths)
+				this.previous = clipboard.readText()
 			})
-			res.data.pipe(file)
+			res.data.pipe(stream)
 		} else {
 			clipboard.writeText(data.content as string)
 		}

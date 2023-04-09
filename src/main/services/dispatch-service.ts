@@ -19,10 +19,12 @@ export default class DispatchService {
 		if (data.type !== 'text') {
 			const file = data.content as File
 			const form = new FormData()
-			form.append('file', file.blob, file.name)
+			form.append('file', file.blob!, file.name)
 
 			const res = await axios.post('http://127.0.0.1:5046/store', form)
-			const message = { type: data.type, content: res.data }
+			const content = { contentId: res.data, name: file.name }
+			const message = { type: data.type, content }
+
 			this.client.send(JSON.stringify(message))
 			this.logClipboard(message, 'outbound')
 		} else {

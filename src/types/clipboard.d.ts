@@ -9,8 +9,9 @@ export default interface Clipboard {
 export type ClipboardType = 'text' | 'file' | 'folder'
 
 export type File = {
+	contentId?: string
 	name: string
-	blob: Blob
+	blob?: Blob
 }
 
 export type ClipboardLog = {

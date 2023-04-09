@@ -1,16 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
+import ClipboardWidget from '../../widgets/ClipboardWidget'
+import { useStore } from '../../../context/store-provider'
+import { ClipboardLog } from '../../../../types/clipboard'
 
 export default () => {
-	const [view, setView] = useState<'devices' | 'settings'>('devices')
+	const { store } = useStore()
 
 	return (
 		<div>
-			<h2>Devices</h2>
 			<button onClick={() => window.electron.logout()}>logout</button>
+			<h2>Clipboard</h2>
+			{store.clipboard &&
+				store.clipboard.map((log: ClipboardLog) => (
+					<ClipboardWidget key={Math.random()} {...log} />
+				))}
 		</div>
 	)
-}
-
-const Header = () => {
-	return <div className=""></div>
 }

@@ -8,8 +8,7 @@
 
 .login-button {
 	border-radius: 8px;
-	border: 0px;
-	outline: solid lightgray 1px;
+	border: solid lightgray 1px;
 	width: 100%;
 	height: 45px;
 	color: black;
@@ -22,7 +21,7 @@
 
 .login-button:hover {
 	background: rgb(224, 224, 224);
-	outline: solid black 1px;
+	border: solid black 1px;
 }
 
 .login-logo {

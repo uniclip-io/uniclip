@@ -20,8 +20,8 @@ export default (log: ClipboardLog) => {
 			<div className="clipboard-icon">
 				<span className="material-icons-outlined">{icons[clipboard.type]}</span>
 			</div>
-			<h4>{text}</h4>
 			<span className="material-icons-outlined">{icons[log.direction]}</span>
+			<h4>{text}</h4>
 		</div>
 	)
 }

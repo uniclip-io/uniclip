@@ -11,7 +11,7 @@ export default class DispatchService {
 
 	constructor(clipboardService: ClipboardService) {
 		this.clipboardService = clipboardService
-		this.client = new WebSocket('ws://127.0.0.1:8000')
+		this.client = new WebSocket('ws://192.168.1.185:8000')
 		this.client.on('message', this.receiveClipboard.bind(this))
 	}
 

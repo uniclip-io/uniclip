@@ -1,4 +1,4 @@
-import { clipboard } from 'electron'
+import { app, clipboard } from 'electron'
 import Clipboard, { File } from '../../types/clipboard'
 import archiver from 'archiver'
 import fs from 'fs'
@@ -18,15 +18,25 @@ export default class ClipboardService {
 				? decodeURIComponent(fileData.replace('file://', ''))
 				: fileData.replace(new RegExp(String.fromCharCode(0), 'g'), '')
 
-			if (!this.previous || this.previous.type !== 'file' || this.previous.content !== filePath) {
+			if (
+				!this.previous ||
+				this.previous.type !== 'file' ||
+				this.previous.content !== filePath
+			) {
 				this.previous = { type: 'file', content: filePath }
 
-				return fs.lstatSync(filePath).isDirectory() ? await this.getDirectoryContent(filePath) : this.getFileContent(filePath)
+				return fs.lstatSync(filePath).isDirectory()
+					? await this.getDirectoryContent(filePath)
+					: this.getFileContent(filePath)
 			}
 		} else {
 			const content = clipboard.readText()
 
-			if (!this.previous || this.previous.type !== 'text' || this.previous.content !== content) {
+			if (
+				!this.previous ||
+				this.previous.type !== 'text' ||
+				this.previous.content !== content
+			) {
 				return (this.previous = { type: 'text', content })
 			}
 		}
@@ -34,21 +44,23 @@ export default class ClipboardService {
 	}
 
 	public async writeClipboard(data: Clipboard): Promise<void> {
-		const content = data.content as string
-
 		if (data.type !== 'text') {
-			const res = await axios.get('http://192.168.1.185:5046/fetch/' + content, {
+			const { contentId, name } = data.content as File
+
+			const outputFile = path.join(app.getAppPath(), name)
+			const res = await axios.get('http://192.168.1.185:5046/fetch/' + contentId, {
 				responseType: 'stream'
 			})
 
-			const disposition = res.headers['content-disposition'] ?? content
-			const fileName = disposition.split(';')[1].replace('filename=', '').replace(/['"]+/g, '').trim()
-			const file = fs.createWriteStream('/Users/noahgreff/Desktop/' + fileName)
+			const file = fs.createWriteStream(outputFile)
+			file.on('finish', () => {
+				file.close()
+				this.writeFile(outputFile)
+			})
 
 			res.data.pipe(file)
-			file.on('finish', file.close)
 		} else {
-			clipboard.writeText(content)
+			clipboard.writeText(data.content as string)
 		}
 	}
 
@@ -65,7 +77,7 @@ export default class ClipboardService {
 	private async getDirectoryContent(directoryPath: string): Promise<Clipboard> {
 		return new Promise(async resolve => {
 			const name = path.basename(directoryPath) + '.zip'
-			const outputFile = path.join(process.cwd(), name)
+			const outputFile = path.join(app.getAppPath(), name)
 
 			const output = fs.createWriteStream(outputFile)
 			const archive = archiver('zip', { zlib: { level: 9 } })
@@ -87,5 +99,23 @@ export default class ClipboardService {
 			archive.directory(directoryPath, false)
 			await archive.finalize()
 		})
+	}
+
+	private writeFile(path: string) {
+		if (process.platform === 'darwin') {
+			clipboard.writeBuffer(
+				'NSFilenamesPboardType',
+				Buffer.from(`
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+          <array>
+            <string>${path}</string>
+          </array>
+        </plist>
+      `)
+			)
+		} else if (process.platform === 'win32') {
+		}
 	}
 }

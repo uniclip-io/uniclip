@@ -4,7 +4,10 @@ import Dashboard from './components/views/home/Dashboard'
 import Login from './components/views/Login'
 
 export default () => {
-	const { store } = useStore()
+	const { store, isLoading } = useStore()
 
-	return store.user ? <Dashboard /> : <Login />
+	if (isLoading) {
+		return <h1>loading...</h1>
+	}
+	return store?.user ? <Dashboard /> : <Login />
 }

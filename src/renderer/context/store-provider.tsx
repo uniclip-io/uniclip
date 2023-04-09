@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
 
 const initial = {
-	user: null
+	user: null,
+	clipboard: []
 }
 
 type Key = keyof typeof initial
+
 type Store = {
 	store: Record<Key, any>
+	isLoading: boolean
 	setValue: (key: Key, value: any) => Promise<void>
 }
 
@@ -16,25 +19,35 @@ export const useStore = () => React.useContext(StoreContext)
 
 export default ({ children }: any) => {
 	const [store, setStore] = useState(initial)
+	const [isLoading, setLoading] = useState(true)
 
 	useEffect(() => {
+		loadStore()
 		window.electron.onStoreChanged(updateValue)
-		init()
 	}, [])
 
-	const init = async () => {
+	const loadStore = async () => {
 		for (const key in initial) {
-			updateValue(key, await window.electron.getStoreData(key))
+			const defaultValue = initial[key as Key]
+			const value = await window.electron.getStoreData(key)
+			initial[key as Key] = (value as never) ?? defaultValue
 		}
+		setStore(initial)
+		setLoading(false)
 	}
 
 	const setValue = async (key: Key, value: any): Promise<void> => {
-		updateValue(key, await window.electron.setStoreData(key, value))
+		await window.electron.setStoreData(key, value)
+		updateValue(key, value)
 	}
 
-	const updateValue = (key: string, value: any) => {
-		setStore({ ...store, ...{ [key]: value } })
+	const updateValue = (key: Key, value: any) => {
+		setStore({ ...store, [key]: value })
 	}
 
-	return <StoreContext.Provider value={{ store, setValue }}>{children}</StoreContext.Provider>
+	return (
+		<StoreContext.Provider value={{ store, isLoading, setValue }}>
+			{children}
+		</StoreContext.Provider>
+	)
 }

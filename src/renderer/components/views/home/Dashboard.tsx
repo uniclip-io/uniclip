@@ -1,5 +1,5 @@
 import React from 'react'
-import ClipboardHistory from '../../widgets/ClipboardHistory'
+import ClipboardHistory from '../../panels/ClipboardHistory'
 
 export default () => {
 	return (

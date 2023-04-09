@@ -51,7 +51,12 @@ export default class ClipboardService {
 						if (fs.lstatSync(pth).isDirectory()) {
 							archive.directory(pth, false)
 						} else {
-							archive.file(pth, { name: path.basename(pth) })
+							const name = path.basename(pth)
+
+							// TODO - review
+							if (name !== '.DS_Store') {
+								archive.file(pth, { name })
+							}
 						}
 					}
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { ClipboardLog } from '../../../types/clipboard'
 import { useStore } from '../../context/store-provider'
-import ClipboardWidget from './ClipboardWidget'
+import ClipboardWidget from '../widgets/ClipboardWidget'
 import './ClipboardHistory.css'
 
 export default () => {

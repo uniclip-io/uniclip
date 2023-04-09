@@ -1,7 +1,7 @@
 import React from 'react'
 // @ts-ignore
 import logo from '../../../../assets/logo.png'
-import './Loading.css'
+import './Splash.css'
 
 export default () => {
 	return (

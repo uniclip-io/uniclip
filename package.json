@@ -29,6 +29,7 @@
 		"material-icons": "^1.13.4",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
+		"react-router-dom": "^6.10.0",
 		"server-destroy": "^1.0.1",
 		"typeface-roboto": "^1.1.13",
 		"unzipper": "^0.10.11",

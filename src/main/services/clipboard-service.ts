@@ -8,12 +8,12 @@ import path from 'path'
 import axios from 'axios'
 
 export default class ClipboardService {
-	private readonly outputDir = path.join(app.getAppPath(), 'temp')
+	private readonly tempDirectory = path.join(app.getAppPath(), 'temp')
 	private previous: string
 
 	constructor() {
-		if (!fs.existsSync(this.outputDir)) {
-			fs.mkdirpSync(this.outputDir)
+		if (!fs.existsSync(this.tempDirectory)) {
+			fs.mkdirpSync(this.tempDirectory)
 		}
 		this.previous = clipboard.readText()
 	}
@@ -27,7 +27,7 @@ export default class ClipboardService {
 
 			if (files.length > 0) {
 				return new Promise(async resolve => {
-					const outputFile = path.join(app.getPath('desktop'), 'temp.zip')
+					const outputFile = path.join(this.tempDirectory, 'temp.zip')
 					const output = fs.createWriteStream(outputFile)
 					const archive = archiver('zip', { zlib: { level: 9 } })
 
@@ -35,10 +35,13 @@ export default class ClipboardService {
 						const blob = new Blob([fs.readFileSync(outputFile)])
 						fs.unlinkSync(outputFile)
 
+						const type = files.length > 1 ? 'diverse' : fs.lstatSync(files[0]).isDirectory() ? 'folder' : 'file'
+						const name = type === 'diverse' ? 'Files & Folders' : path.basename(files[0])
+
 						resolve({
-							type: files.length > 1 || fs.lstatSync(files[0]).isDirectory() ? 'folder' : 'file',
+							type,
 							content: {
-								name: path.basename(files[0]),
+								name,
 								blob
 							}
 						})
@@ -65,16 +68,17 @@ export default class ClipboardService {
 
 	public async writeClipboard(data: Clipboard): Promise<void> {
 		if (data.type !== 'text') {
-			await fs.emptyDir(this.outputDir)
-			const file = data.content as File
+			await fs.emptyDir(this.tempDirectory)
+			const { contentId, name } = data.content as File
+			const outputAs = data.type === 'diverse' ? this.tempDirectory : path.join(this.tempDirectory, name)
 
-			const res = await axios.get('http://192.168.1.185:5046/fetch/' + file.contentId, {
+			const res = await axios.get('http://192.168.1.185:5046/fetch/' + contentId, {
 				responseType: 'stream'
 			})
 
-			const stream = unzipper.Extract({ path: this.outputDir })
+			const stream = unzipper.Extract({ path: outputAs })
 			stream.on('close', () => {
-				const paths = fs.readdirSync(this.outputDir).map(p => path.join(this.outputDir, p))
+				const paths = fs.readdirSync(outputAs).map(p => path.join(outputAs, p))
 				clipboardFiles.writeFilePaths(paths)
 				this.previous = clipboard.readText()
 			})

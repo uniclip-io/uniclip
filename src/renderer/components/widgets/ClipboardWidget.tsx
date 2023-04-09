@@ -7,7 +7,8 @@ const icons = {
 	outbound: 'arrow_circle_up',
 	text: 'short_text',
 	file: 'insert_drive_file',
-	folder: 'folder'
+	folder: 'folder',
+	diverse: 'file_copy'
 }
 
 export default (log: ClipboardLog) => {

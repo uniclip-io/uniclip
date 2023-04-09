@@ -6,7 +6,7 @@ export default interface Clipboard {
 	content: string | File
 }
 
-export type ClipboardType = 'text' | 'file' | 'folder'
+export type ClipboardType = 'text' | 'file' | 'folder' | 'diverse'
 
 export type File = {
 	contentId?: string

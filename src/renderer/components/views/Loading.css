@@ -1,0 +1,25 @@
+.loading-container {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	/* flex-direction: column; */
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+
+.loading-logo {
+	animation: rotation 1s infinite ease-out;
+	width: 100px;
+	height: 100px;
+}
+
+@keyframes rotation {
+	from {
+		transform: rotate(359deg);
+	}
+	to {
+		transform: rotate(0deg);
+	}
+}

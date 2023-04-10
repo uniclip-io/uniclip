@@ -1,4 +1,3 @@
-import { clipboard } from 'electron'
 import { Direction } from './message'
 
 export default interface Clipboard {

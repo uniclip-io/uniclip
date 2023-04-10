@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useStore } from './context/store-provider'
-import { Routes, Route } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import Dashboard from './components/views/dashboard/Dashboard'
 import Login from './components/views/Login'
 import Splash from './components/views/Splash'
@@ -18,7 +17,7 @@ export default () => {
 		} else {
 			navigation('/dashboard')
 		}
-	}, [isLoading])
+	}, [isLoading, store])
 
 	return (
 		<Routes>

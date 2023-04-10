@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route, Link, useRoutes } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import Clipboard from './Clipboard'
 import Devices from './Devices'
 import Settings from './Settings'

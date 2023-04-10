@@ -36,7 +36,7 @@ export default class ClipboardService {
 						fs.unlinkSync(outputFile)
 
 						// prettier-ignore
-						const type =files.length > 1 ? 'diverse': fs.lstatSync(files[0]).isDirectory() ? 'folder' : 'file'
+						const type = files.length > 1 ? 'diverse': fs.lstatSync(files[0]).isDirectory() ? 'folder' : 'file'
 						// prettier-ignore
 						const name = type === 'diverse' ? 'Files & Folders' : path.basename(files[0])
 

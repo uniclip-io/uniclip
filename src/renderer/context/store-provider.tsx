@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 
 const initial = {
 	user: null,
@@ -45,9 +45,7 @@ export default ({ children }: any) => {
 		setStore({ ...store, [key]: value })
 	}
 
-	return (
-		<StoreContext.Provider value={{ store, isLoading, setValue }}>
-			{children}
-		</StoreContext.Provider>
-	)
+	const value = useMemo(() => ({ store, isLoading, setValue }), [store, isLoading])
+
+	return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

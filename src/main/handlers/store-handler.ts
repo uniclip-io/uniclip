@@ -1,9 +1,7 @@
 import { IpcMainEvent, ipcMain } from 'electron'
-import ElectronStore from 'electron-store'
 import channels from '../../channels'
+import { store } from '../../store'
 import { window } from '..'
-
-const store = new ElectronStore()
 
 export const getValue = <T>(key: string): T => {
 	return store.get(key) as T

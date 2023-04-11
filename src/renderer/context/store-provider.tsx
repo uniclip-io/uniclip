@@ -1,19 +1,20 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useContext, createContext } from 'react'
+import { Key } from '../../store'
 
 type StoreProviderOptions = {
 	children?: React.ReactNode
-	initial: Record<string, any>
+	initial: Record<Key, any>
 }
-  
+
 type Store = {
-	store: Record<string, any>
+	store: Record<Key, any>
 	isLoading: boolean
-	setValue: (key: string, value: any) => Promise<void>
+	setValue: (key: Key, value: any) => Promise<void>
 }
 
-const StoreContext = React.createContext<Store>(null as any)
+const StoreContext = createContext<Store>(null as any)
 
-export const useStore = () => React.useContext(StoreContext)
+export const useStore = () => useContext(StoreContext)
 
 export default ({ children, initial }: StoreProviderOptions) => {
 	const [store, setStore] = useState(initial)
@@ -26,21 +27,21 @@ export default ({ children, initial }: StoreProviderOptions) => {
 
 	const loadStore = async () => {
 		for (const key in initial) {
-			const defaultValue = initial[key]
 			const value = await window.electron.getStoreData(key)
-			initial[key] = (value as never) ?? defaultValue
+			initial[key] = value as any
 		}
 		setStore(initial)
 		setLoading(false)
 	}
 
-	const setValue = async (key: string, value: any): Promise<void> => {
+	const setValue = async (key: Key, value: any): Promise<void> => {
 		await window.electron.setStoreData(key, value)
 		updateValue(key, value)
 	}
 
-	const updateValue = (key: string, value: any) => {
+	const updateValue = (key: Key, value: any) => {
 		setStore({ ...store, [key]: value })
+		console.log(store)
 	}
 
 	const value = useMemo(() => ({ store, isLoading, setValue }), [store, isLoading])

@@ -18,9 +18,6 @@ export default class DispatchService {
 	public async sendClipboard(data: Clipboard) {
 		if (data.type !== 'text') {
 			const file = data.content as File
-			const form = new FormData()
-			form.append('file', file.blob!, file.name)
-
 			const contentId = await upload(file)
 			const content = { contentId, name: file.name }
 			const message = { type: data.type, content }

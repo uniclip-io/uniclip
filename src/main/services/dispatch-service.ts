@@ -11,16 +11,13 @@ export default class DispatchService {
 
 	constructor(clipboardService: ClipboardService) {
 		this.clipboardService = clipboardService
-		this.client = new WebSocket('ws://192.168.1.185:8000')
+		this.client = new WebSocket('ws://192.168.0.200:8000')
 		this.client.on('message', this.receiveClipboard.bind(this))
 	}
 
 	public async sendClipboard(data: Clipboard) {
 		if (data.type !== 'text') {
 			const file = data.content as File
-			const form = new FormData()
-			form.append('file', file.blob!, file.name)
-
 			const contentId = await upload(file)
 			const content = { contentId, name: file.name }
 			const message = { type: data.type, content }

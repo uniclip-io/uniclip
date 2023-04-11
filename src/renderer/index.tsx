@@ -8,7 +8,7 @@ import 'material-icons/iconfont/material-icons.css'
 import 'typeface-roboto/index.css'
 
 createRoot(document.getElementById('app')!).render(
-	<StoreProvider>
+	<StoreProvider initial={{ user: null, clipboard: [] }}>
 		<HashRouter>
 			<App />
 		</HashRouter>

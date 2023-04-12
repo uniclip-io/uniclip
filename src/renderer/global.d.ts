@@ -1,4 +1,3 @@
-import { Credentials } from 'google-auth-library'
 import { IpcRendererEvent } from 'electron'
 
 declare global {

@@ -1,18 +1,22 @@
 import GoogleAuthenticationProvider from './google-provider'
 import MicrosoftAuthenticationProvider from './microsoft-provider'
-import destroyer from 'server-destroy'
 import http from 'http'
 import open from 'open'
 
 export const authenticateClient = (name: AuthService): Promise<any> => {
 	const service = services[name]
 
-	return new Promise(async resolve => {
+	return new Promise(async (resolve, reject) => {
 		const server = http.createServer(async (req, res) => {
 			if (req.url?.indexOf('/login') !== -1) {
-				const profile = await service.getUserProfile(req)
-				resolve(profile)
-				res.end('Authentication successful. You may close this tab.')
+				service
+					.getUserProfile(req)
+					.then(resolve)
+					.catch(reject)
+					.finally(() => {
+						res.end('Authentication successful. You may close this tab.')
+						server.close()
+					})
 			}
 		})
 
@@ -20,7 +24,6 @@ export const authenticateClient = (name: AuthService): Promise<any> => {
 			const url = service.getAuthenticationUrl()
 			open(url, { wait: false }).then(cp => cp.unref())
 		})
-		destroyer(server)
 	})
 }
 

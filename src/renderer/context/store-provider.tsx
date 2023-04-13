@@ -41,7 +41,6 @@ export default ({ children, initial }: StoreProviderOptions) => {
 
 	const updateValue = (key: Key, value: any) => {
 		setStore({ ...store, [key]: value })
-		console.log(store)
 	}
 
 	const value = useMemo(() => ({ store, isLoading, setValue }), [store, isLoading])

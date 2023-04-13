@@ -1,5 +1,5 @@
-import { Credentials } from 'google-auth-library'
 import { IpcRendererEvent } from 'electron'
+import { AuthService } from 'src/main/auth'
 
 declare global {
 	interface Window {
@@ -7,7 +7,7 @@ declare global {
 			getStoreData: <T>(key: string) => Promise<T>
 			setStoreData: (key: string, value: any) => Promise<T>
 			onStoreChanged: (callback: (key: string, value: any) => void) => Promise<void>
-			login: () => Promise<void>
+			login: (service: AuthService) => Promise<void>
 			logout: () => Promise<void>
 		}
 	}

@@ -1,6 +1,10 @@
 import React from 'react'
 // @ts-ignore
 import logo from '../../../../assets/logo.png'
+// @ts-ignore
+import google from '../../../../assets/icons/google.png'
+// @ts-ignore
+import microsoft from '../../../../assets/icons/microsoft.png'
 import './Login.css'
 
 export default () => {
@@ -14,9 +18,16 @@ export default () => {
 				</div>
 				<p className="login-subtitle">Login and connect devices together.</p>
 			</div>
-			<button className="login-button" onClick={() => window.electron.login()}>
-				Login with Google
-			</button>
+			<div>
+				<button className="login-button" onClick={() => window.electron.login('google')}>
+					<img className="login-button-icon" src={google} alt="" />
+					Google
+				</button>
+				<button className="login-button" onClick={() => window.electron.login('microsoft')}>
+					<img className="login-button-icon" src={microsoft} alt="" />
+					Microsoft
+				</button>
+			</div>
 		</div>
 	)
 }

@@ -1,13 +1,15 @@
 import { app, clipboard } from 'electron'
-import Clipboard, { File } from '../../types/clipboard'
+import Clipboard, { RecordLog, Record } from '../../types/clipboard'
+import { Direction } from '../../types/message'
+import { getValue, setValue } from '../handlers/store-handler'
+import { downloadFile } from '../../apis/content-service'
 import clipboardFiles from 'electron-clipboard-ex'
-import { download } from '../../apis/content-service'
 import archiver from 'archiver'
 import unzipper from 'unzipper'
 import fs from 'fs-extra'
 import path from 'path'
 
-export default class ClipboardService {
+export default class ClipboardManager {
 	private readonly tempDir = path.join(app.getAppPath(), 'temp')
 	private previous: string
 
@@ -73,23 +75,43 @@ export default class ClipboardService {
 		}
 	}
 
-	public async writeClipboard(data: Clipboard): Promise<void> {
-		if (data.type !== 'text') {
+	public async writeClipboard(record: Record): Promise<Record> {
+		if (record.type !== 'text') {
 			await fs.emptyDir(this.tempDir)
-			const { contentId, name } = data.content as File
-			const outputAs = data.type === 'diverse' ? this.tempDir : path.join(this.tempDir, name)
+			const contentId = record.content as string
+			const [name, res] = await downloadFile(contentId)
 
-			const res = await download(contentId!)
-
+			const outputAs =
+				record.type === 'diverse' ? this.tempDir : path.join(this.tempDir, name)
 			const stream = unzipper.Extract({ path: outputAs })
+
 			stream.on('close', () => {
-				const paths = fs.readdirSync(outputAs).map(p => path.join(outputAs, p))
+				const paths = fs
+					.readdirSync(outputAs)
+					.filter(n => n !== '.DS_Store')
+					.map(n => path.join(outputAs, n))
+
 				clipboardFiles.writeFilePaths(paths)
 				this.previous = clipboard.readText()
 			})
 			res.pipe(stream)
+
+			return {
+				...record,
+				content: {
+					name,
+					contentId
+				}
+			}
 		} else {
-			clipboard.writeText(data.content as string)
+			clipboard.writeText(record.content as string)
+			return record
 		}
+	}
+
+	public log(record: Record, direction: Direction) {
+		const history = getValue<RecordLog[]>('clipboard') ?? []
+		const log = { record, direction: direction }
+		setValue('clipboard', [...history, log])
 	}
 }

@@ -1,5 +1,7 @@
 import { app, BrowserWindow, nativeImage, Tray } from 'electron'
-import { startListening } from './services'
+import { getValue } from './handlers/store-handler'
+import { connect } from '../apis/dispatch-service'
+import UserProfile from '../types/user'
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
@@ -45,11 +47,14 @@ let isQuiting = false
 
 app.dock.setIcon(nativeImage.createFromPath(app.getAppPath() + '/assets/icon.png'))
 
-app.on('ready', async () => {
+app.on('ready', () => {
 	createWindow()
-	startListening(100)
-})
 
+	const user = getValue('user') as UserProfile
+	if (user) {
+		connect(user.id, 'ws://localhost:8000')
+	}
+})
 app.on('before-quit', () => (isQuiting = true))
 app.on('window-all-closed', () => process.platform !== 'darwin' && app.quit())
 app.on('activate', () => (window ? window.show() : createWindow()))
@@ -57,3 +62,5 @@ app.on('activate', () => (window ? window.show() : createWindow()))
 export { window }
 
 import './handlers'
+
+// require('../store').store.clear()

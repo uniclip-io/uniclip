@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { ClipboardLog } from '../../../types/clipboard'
+import { RecordLog } from '../../../types/clipboard'
 import { useStore } from '../../context/store-provider'
 import ClipboardWidget from '../widgets/ClipboardWidget'
 import './ClipboardHistory.css'
@@ -16,7 +16,7 @@ export default () => {
 		<div className="clipboard-histroy-container">
 			<h2>Clipboard</h2>
 			<div className="clipboard-histroy-list">
-				{store.clipboard.map((log: ClipboardLog) => (
+				{store.clipboard.map((log: RecordLog) => (
 					<ClipboardWidget key={Math.random()} {...log} />
 				))}
 				<div ref={bottom} />

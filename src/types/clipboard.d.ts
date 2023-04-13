@@ -5,7 +5,8 @@ export default interface Clipboard {
 	content: string | File
 }
 
-export type ClipboardType = 'text' | 'file' | 'folder' | 'diverse'
+export type FileType = 'file' | 'folder' | 'diverse'
+export type ClipboardType = FileType | 'text'
 
 export type File = {
 	contentId?: string
@@ -13,7 +14,14 @@ export type File = {
 	blob?: Blob
 }
 
-export type ClipboardLog = {
-	clipboard: Clipboard
+export type Record = {
+	id: string
+	date: string
+	type: ClipboardType
+	content: string | File
+}
+
+export type RecordLog = {
+	record: Record
 	direction: Direction
 }

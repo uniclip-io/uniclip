@@ -6,6 +6,7 @@ export default interface Clipboard {
 }
 
 export type FileType = 'file' | 'folder' | 'diverse'
+
 export type ClipboardType = FileType | 'text'
 
 export type File = {
@@ -19,9 +20,4 @@ export type Record = {
 	date: string
 	type: ClipboardType
 	content: string | File
-}
-
-export type RecordLog = {
-	record: Record
-	direction: Direction
 }

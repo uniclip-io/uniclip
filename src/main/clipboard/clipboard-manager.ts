@@ -1,7 +1,5 @@
 import { app, clipboard } from 'electron'
-import Clipboard, { RecordLog, Record } from '../../types/clipboard'
-import { Direction } from '../../types/message'
-import { getValue, setValue } from '../handlers/store-handler'
+import Clipboard, { Record } from '../../types/clipboard'
 import { downloadFile } from '../../apis/content-service'
 import clipboardFiles from 'electron-clipboard-ex'
 import archiver from 'archiver'
@@ -81,8 +79,8 @@ export default class ClipboardManager {
 			const contentId = record.content as string
 			const [name, res] = await downloadFile(contentId)
 
-			const outputAs =
-				record.type === 'diverse' ? this.tempDir : path.join(this.tempDir, name)
+			// prettier-ignore
+			const outputAs = record.type === 'diverse' ? this.tempDir : path.join(this.tempDir, name)
 			const stream = unzipper.Extract({ path: outputAs })
 
 			stream.on('close', () => {
@@ -107,11 +105,5 @@ export default class ClipboardManager {
 			clipboard.writeText(record.content as string)
 			return record
 		}
-	}
-
-	public log(record: Record, direction: Direction) {
-		const history = getValue<RecordLog[]>('clipboard') ?? []
-		const log = { record, direction: direction }
-		setValue('clipboard', [...history, log])
 	}
 }

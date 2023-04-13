@@ -13,8 +13,7 @@ export const start = async (userId: string, interval: number) => {
 
 		if (clipboard) {
 			if (clipboard.type === 'text') {
-				const record = await postClipboard(userId, clipboard)
-				clipboardManager.log(record, 'outbound')
+				await postClipboard(userId, clipboard)
 			} else {
 				const file = clipboard.content as File
 				await uploadFile(userId, file, clipboard.type)

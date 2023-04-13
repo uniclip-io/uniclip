@@ -1,5 +1,5 @@
 import React from 'react'
-import { RecordLog } from '../../../types/clipboard'
+import { Record } from '../../../types/clipboard'
 import './ClipboardWidget.css'
 
 const icons = {
@@ -11,8 +11,7 @@ const icons = {
 	diverse: 'file_copy'
 }
 
-export default (log: RecordLog) => {
-	const { record } = log
+export default (record: Record) => {
 	const { content } = record
 	const text = typeof content === 'string' ? content : content.name
 
@@ -21,7 +20,6 @@ export default (log: RecordLog) => {
 			<div className="clipboard-icon">
 				<span className="material-icons-outlined">{icons[record.type]}</span>
 			</div>
-			<span className="material-icons-outlined">{icons[log.direction]}</span>
 			<h4>{text}</h4>
 		</div>
 	)

@@ -6,7 +6,7 @@ import { setValue } from './store-handler'
 
 ipcMain.handle(channels.AUTH.LOGIN, async (_: IpcMainEvent, service: AuthService) => {
 	const user = await authenticateClient(service)
-	connect(user.id, 'ws://localhost:8000')
+	connect(user.id)
 	setValue('user', user)
 })
 

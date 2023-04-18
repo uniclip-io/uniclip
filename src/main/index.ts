@@ -52,7 +52,7 @@ app.on('ready', () => {
 
 	const user = getValue('user') as UserProfile
 	if (user) {
-		connect(user.id, 'ws://localhost:8000')
+		connect(user.id)
 	}
 })
 app.on('before-quit', () => (isQuiting = true))

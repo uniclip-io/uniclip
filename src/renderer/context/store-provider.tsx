@@ -30,6 +30,7 @@ export default ({ children, initial }: StoreProviderOptions) => {
 			const value = await window.electron.getStoreData(key)
 			initial[key] = value as any
 		}
+
 		setStore(initial)
 		setLoading(false)
 	}

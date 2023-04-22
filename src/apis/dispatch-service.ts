@@ -3,7 +3,7 @@ import { Record } from '../types/clipboard'
 import { clipboardManager, start, stop } from '../main/clipboard'
 import { getValue, setValue } from '../main/handlers/store-handler'
 
-const baseUrl = 'ws://localhost:8001'
+const baseUrl = 'ws://localhost:8000'
 
 let client: WebSocket | null
 

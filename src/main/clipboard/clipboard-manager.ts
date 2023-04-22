@@ -1,5 +1,5 @@
 import { app, clipboard } from 'electron'
-import Clipboard, { Record } from '../../types/clipboard'
+import Clipboard, { ClipboardType, Record } from '../../types/clipboard'
 import { downloadFile } from '../../apis/content-service'
 import clipboardFiles from 'electron-clipboard-ex'
 import archiver from 'archiver'
@@ -35,10 +35,8 @@ export default class ClipboardManager {
 						const blob = new Blob([fs.readFileSync(outputFile)])
 						fs.unlinkSync(outputFile)
 
-						// prettier-ignore
-						const type = files.length > 1 ? 'diverse': fs.lstatSync(files[0]).isDirectory() ? 'folder' : 'file'
-						// prettier-ignore
-						const name = type === 'diverse' ? 'Files & Folders' : path.basename(files[0])
+						const type = this.getRecordType(files)
+						const name = this.getRecordName(type, files)
 
 						resolve({
 							type,
@@ -79,8 +77,7 @@ export default class ClipboardManager {
 			const contentId = record.content as string
 			const [name, res] = await downloadFile(contentId)
 
-			// prettier-ignore
-			const outputAs = record.type === 'diverse' ? this.tempDir : path.join(this.tempDir, name)
+			const outputAs = record.type == 'diverse' ? this.tempDir : path.join(this.tempDir, name)
 			const stream = unzipper.Extract({ path: outputAs })
 
 			stream.on('close', () => {
@@ -105,5 +102,19 @@ export default class ClipboardManager {
 			clipboard.writeText(record.content as string)
 			return record
 		}
+	}
+
+	private getRecordType(files: string[]): ClipboardType {
+		return files.length > 1
+			? 'diverse'
+			: fs.lstatSync(files[0]).isDirectory()
+			? 'folder'
+			: 'file'
+	}
+
+	private getRecordName(type: ClipboardType, files: string[]): string {
+		return type === 'diverse'
+			? files.map(f => path.basename(f)).join(', ')
+			: path.basename(files[0])
 	}
 }

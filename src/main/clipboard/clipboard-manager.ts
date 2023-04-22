@@ -1,5 +1,5 @@
 import { app, clipboard } from 'electron'
-import Clipboard, { ClipboardType, Record } from '../../types/clipboard'
+import Clipboard, { FileType, Record } from '../../types/clipboard'
 import { downloadFile } from '../../apis/content-service'
 import clipboardFiles from 'electron-clipboard-ex'
 import archiver from 'archiver'
@@ -48,15 +48,12 @@ export default class ClipboardManager {
 					})
 
 					for (const pth of files) {
-						if (fs.lstatSync(pth).isDirectory()) {
-							archive.directory(pth, false)
-						} else {
-							const name = path.basename(pth)
+						const name = path.basename(pth)
 
-							// TODO - review
-							if (name !== '.DS_Store') {
-								archive.file(pth, { name })
-							}
+						if (fs.lstatSync(pth).isDirectory()) {
+							archive.directory(pth, name)
+						} else if (name !== '.DS_Store') {
+							archive.file(pth, { name })
 						}
 					}
 
@@ -77,14 +74,13 @@ export default class ClipboardManager {
 			const contentId = record.content as string
 			const [name, res] = await downloadFile(contentId)
 
-			const outputAs = record.type == 'diverse' ? this.tempDir : path.join(this.tempDir, name)
-			const stream = unzipper.Extract({ path: outputAs })
+			const stream = unzipper.Extract({ path: this.tempDir })
 
 			stream.on('close', () => {
 				const paths = fs
-					.readdirSync(outputAs)
+					.readdirSync(this.tempDir)
 					.filter(n => n !== '.DS_Store')
-					.map(n => path.join(outputAs, n))
+					.map(n => path.join(this.tempDir, n))
 
 				clipboardFiles.writeFilePaths(paths)
 				this.previous = clipboard.readText()
@@ -105,7 +101,7 @@ export default class ClipboardManager {
 		}
 	}
 
-	private getFileRecordType(files: string[]): ClipboardType {
+	private getFileRecordType(files: string[]): FileType {
 		return files.length > 1
 			? 'diverse'
 			: fs.lstatSync(files[0]).isDirectory()
@@ -113,7 +109,7 @@ export default class ClipboardManager {
 			: 'file'
 	}
 
-	private getFileRecordName(type: ClipboardType, files: string[]): string {
+	private getFileRecordName(type: FileType, files: string[]): string {
 		return type === 'diverse'
 			? files.map(f => path.basename(f)).join(', ')
 			: path.basename(files[0])

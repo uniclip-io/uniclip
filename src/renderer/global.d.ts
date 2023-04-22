@@ -9,6 +9,7 @@ declare global {
 			onStoreChanged: (callback: (key: string, value: any) => void) => Promise<void>
 			login: (service: AuthService) => Promise<void>
 			logout: () => Promise<void>
+			copy: (recordId: string) => Promise<void>
 		}
 	}
 }

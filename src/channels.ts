@@ -7,5 +7,8 @@ export default {
 	AUTH: {
 		LOGIN: 'auth.login',
 		LOGOUT: 'auth.logout'
+	},
+	CLIPBOARD: {
+		COPY: 'clipboard.copy'
 	}
 }

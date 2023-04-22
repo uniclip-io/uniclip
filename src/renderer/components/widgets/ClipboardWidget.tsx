@@ -3,8 +3,6 @@ import { Record } from '../../../types/clipboard'
 import './ClipboardWidget.css'
 
 const icons = {
-	inbound: 'arrow_circle_down',
-	outbound: 'arrow_circle_up',
 	text: 'short_text',
 	file: 'insert_drive_file',
 	folder: 'folder',

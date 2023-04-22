@@ -1,5 +1,13 @@
 .clipboard-histroy-list {
 	overflow-y: auto;
 	overflow-x: hidden;
-	height: 500px;
+	height: 450px;
+}
+
+.clipboard-histroy-filters {
+	display: flex;
+}
+
+.clipboard-histroy-filter {
+	padding: 10px;
 }

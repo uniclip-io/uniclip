@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { File, FileType } from '../types/clipboard'
 
-const baseUrl = 'http://127.0.0.1:5046'
+const baseUrl = 'http://localhost:2003'
 
 export const uploadFile = async (userId: string, file: File, type: FileType): Promise<string> => {
 	const form = new FormData()

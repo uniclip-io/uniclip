@@ -3,12 +3,12 @@ import { Record } from '../types/clipboard'
 import { clipboardManager, start, stop } from '../main/clipboard'
 import { getValue, setValue } from '../main/handlers/store-handler'
 
-const baseUrl = 'ws://localhost:8000'
+const baseUrl = 'ws://localhost:8001'
 
 let client: WebSocket | null
 
 export const connect = (userId: string) => {
-	client = new WebSocket(baseUrl + '/3fa85f64-5717-4562-b3fc-2c963f66afa6')
+	client = new WebSocket(baseUrl + '/' + userId)
 	client.on('message', async message => {
 		const data = JSON.parse(message.toString()) as Record
 		const record = await clipboardManager.writeClipboard(data)

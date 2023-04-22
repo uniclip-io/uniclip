@@ -1,4 +1,5 @@
 .clipboard-histroy-list {
 	overflow-y: auto;
+	overflow-x: hidden;
 	height: 500px;
 }

@@ -13,14 +13,24 @@ const icons = {
 
 export default (record: Record) => {
 	const { content } = record
-	const text = typeof content === 'string' ? content : content.name
+
+	const copyRecord = () => {
+		window.electron.copy(record.id)
+	}
 
 	return (
 		<div className="clipboard-container">
-			<div className="clipboard-icon">
+			<div className="clipboard-icon clipboard-icon-type">
 				<span className="material-icons-outlined">{icons[record.type]}</span>
 			</div>
-			<h4>{text}</h4>
+			<div className="clipboard-content-container">
+				<div className="clipboard-content">
+					{typeof content === 'string' ? content : content.name}
+				</div>
+			</div>
+			<div className="clipboard-icon clipboard-icon-copy" onClick={copyRecord}>
+				<span className="material-icons-outlined">content_copy</span>
+			</div>
 		</div>
 	)
 }

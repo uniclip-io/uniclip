@@ -3,15 +3,39 @@
 	margin: 10px 20px;
 	gap: 20px;
 	align-items: center;
+	justify-content: space-between;
+}
+
+.clipboard-icon-type {
+	border: solid 1.5px lightgray;
+}
+
+.clipboard-icon-copy {
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.clipboard-icon-copy:hover {
+	background: lightgray;
 }
 
 .clipboard-icon {
-	border-radius: 8px;
-	border: solid 1.5px lightgray;
-	padding: 10px;
-	color: black;
-	background: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	padding: 10px;
+	color: black;
+	border-radius: 8px;
+}
+
+.clipboard-content-container {
+	width: 100%;
+	overflow: hidden;
+}
+
+.clipboard-content {
+	display: block;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }

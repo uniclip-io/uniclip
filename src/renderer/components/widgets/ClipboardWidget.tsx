@@ -27,7 +27,7 @@ export default (record: Record) => {
 				</div>
 			</div>
 			<div className="clipboard-icon clipboard-icon-copy" onClick={copyRecord}>
-				<span className="material-icons-outlined">content_copy</span>
+				<span className="material-icons-outlined">copy_all</span>
 			</div>
 		</div>
 	)

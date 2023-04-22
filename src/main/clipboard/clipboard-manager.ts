@@ -35,8 +35,8 @@ export default class ClipboardManager {
 						const blob = new Blob([fs.readFileSync(outputFile)])
 						fs.unlinkSync(outputFile)
 
-						const type = this.getRecordType(files)
-						const name = this.getRecordName(type, files)
+						const type = this.getFileRecordType(files)
+						const name = this.getFileRecordName(type, files)
 
 						resolve({
 							type,
@@ -100,11 +100,12 @@ export default class ClipboardManager {
 			}
 		} else {
 			clipboard.writeText(record.content as string)
+			this.previous = clipboard.readText()
 			return record
 		}
 	}
 
-	private getRecordType(files: string[]): ClipboardType {
+	private getFileRecordType(files: string[]): ClipboardType {
 		return files.length > 1
 			? 'diverse'
 			: fs.lstatSync(files[0]).isDirectory()
@@ -112,7 +113,7 @@ export default class ClipboardManager {
 			: 'file'
 	}
 
-	private getRecordName(type: ClipboardType, files: string[]): string {
+	private getFileRecordName(type: ClipboardType, files: string[]): string {
 		return type === 'diverse'
 			? files.map(f => path.basename(f)).join(', ')
 			: path.basename(files[0])

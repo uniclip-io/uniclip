@@ -6,8 +6,11 @@ import google from '../../../../assets/icons/google.png'
 // @ts-ignore
 import microsoft from '../../../../assets/icons/microsoft.png'
 import './Login.css'
+import { useNavigate } from 'react-router-dom'
 
 export default () => {
+	const navigation = useNavigate()
+
 	return (
 		<div className="login-container">
 			<img className="login-logo" src={logo} alt="" />
@@ -27,6 +30,15 @@ export default () => {
 					<img className="login-button-icon" src={microsoft} alt="" />
 					Microsoft
 				</button>
+			</div>
+			<div className="tac-pp">
+				<p className="tac-pp-link" onClick={() => navigation('/legal/terms-and-conditions')}>
+					terms and conditions
+				</p>
+				<p>|</p>
+				<p className="tac-pp-link" onClick={() => navigation('/legal/privacy-policy')}>
+					privacy policy
+				</p>
 			</div>
 		</div>
 	)

@@ -4,6 +4,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom'
 import Dashboard from './components/views/dashboard/Dashboard'
 import Login from './components/views/Login'
 import Splash from './components/views/Splash'
+import Legal from './components/views/legal/Legal'
 
 export default () => {
 	const { store, isLoading } = useStore()
@@ -24,6 +25,7 @@ export default () => {
 			<Route path="/" element={<Splash />} />
 			<Route path="/login" element={<Login />} />
 			<Route path="/dashboard/*" element={<Dashboard />} />
+			<Route path="/legal/*" element={<Legal />} />
 		</Routes>
 	)
 }

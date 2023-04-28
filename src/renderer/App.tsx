@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useStore } from './context/store-provider'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import Dashboard from './components/views/dashboard/Dashboard'
-import Login from './components/views/Login'
+import Login from './components/views/auth/Login'
 import Splash from './components/views/Splash'
 import Legal from './components/views/legal/Legal'
 

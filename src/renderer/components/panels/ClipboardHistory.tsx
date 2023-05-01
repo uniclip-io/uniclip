@@ -28,6 +28,7 @@ export default () => {
 			<div className="clipboard-histroy-filters">
 				{allFilters.map(type => (
 					<div
+						key={type}
 						className="clipboard-histroy-filter"
 						style={{ opacity: filters.includes(type) ? 1 : 0.25 }}
 						onClick={() =>
@@ -44,7 +45,7 @@ export default () => {
 				{store.clipboard
 					.filter((r: Record) => filters.includes(r.type))
 					.map((record: Record) => (
-						<ClipboardWidget key={Math.random()} {...record} />
+						<ClipboardWidget key={record.id} {...record} />
 					))}
 				<div ref={bottom} />
 			</div>

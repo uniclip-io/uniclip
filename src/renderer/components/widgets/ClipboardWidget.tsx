@@ -1,6 +1,7 @@
 import React from 'react'
 import { Record } from '../../../types/clipboard'
-import './ClipboardWidget.css'
+import { Icon, IconButton, Stack, Tooltip, Typography } from '@mui/material'
+import { CopyAllOutlined, DeleteRounded } from '@mui/icons-material'
 
 const icons = {
 	text: 'short_text',
@@ -16,19 +17,33 @@ export default (record: Record) => {
 		window.electron.copy(record.id)
 	}
 
+	const deleteRecord = () => {
+		console.log(record.id) // TODO
+	}
+
 	return (
-		<div className="clipboard-container">
-			<div className="clipboard-icon clipboard-icon-type">
-				<span className="material-icons-outlined">{icons[record.type]}</span>
+		<Stack
+			display="flex"
+			margin={['10px', '20px']}
+			gap="20px"
+			alignItems="center"
+			justifyContent="space-between"
+			flexDirection="row"
+		>
+			<Icon>{icons[record.type]}</Icon>
+			<div style={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+				<Typography noWrap>{typeof content === 'string' ? content : content.name}</Typography>
 			</div>
-			<div className="clipboard-content-container">
-				<div className="clipboard-content">
-					{typeof content === 'string' ? content : content.name}
-				</div>
-			</div>
-			<div className="clipboard-icon clipboard-icon-copy" onClick={copyRecord}>
-				<span className="material-icons-outlined">copy_all</span>
-			</div>
-		</div>
+			<Tooltip title="Copy">
+				<IconButton onClick={copyRecord}>
+					<CopyAllOutlined />
+				</IconButton>
+			</Tooltip>
+			<Tooltip title="Delete">
+				<IconButton onClick={deleteRecord}>
+					<DeleteRounded />
+				</IconButton>
+			</Tooltip>
+		</Stack>
 	)
 }

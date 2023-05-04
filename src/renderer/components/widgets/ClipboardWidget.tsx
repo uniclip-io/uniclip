@@ -2,6 +2,7 @@ import React from 'react'
 import { Record } from '../../../types/clipboard'
 import { Icon, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import { CopyAllOutlined, DeleteRounded } from '@mui/icons-material'
+import { deleteRecord } from '../../../apis/clipboard-api'
 
 const icons = {
 	text: 'short_text',
@@ -13,12 +14,12 @@ const icons = {
 export default (record: Record) => {
 	const { content } = record
 
-	const copyRecord = () => {
+	const copyData = () => {
 		window.electron.copy(record.id)
 	}
 
-	const deleteRecord = () => {
-		console.log(record.id) // TODO
+	const deleteData = () => {
+		deleteRecord(record.id)
 	}
 
 	return (
@@ -35,12 +36,12 @@ export default (record: Record) => {
 				<Typography noWrap>{typeof content === 'string' ? content : content.name}</Typography>
 			</div>
 			<Tooltip title="Copy">
-				<IconButton onClick={copyRecord}>
+				<IconButton onClick={copyData}>
 					<CopyAllOutlined />
 				</IconButton>
 			</Tooltip>
 			<Tooltip title="Delete">
-				<IconButton onClick={deleteRecord}>
+				<IconButton onClick={deleteData}>
 					<DeleteRounded />
 				</IconButton>
 			</Tooltip>

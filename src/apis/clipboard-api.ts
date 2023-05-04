@@ -13,3 +13,7 @@ export const fetchRecords = async (userId: string): Promise<Record[]> => {
 	const res = await axios.get(baseUrl + '/fetch/' + userId)
 	return res.data as Record[]
 }
+
+export const deleteRecord = async (recordId: string): Promise<void> => {
+	await axios.delete(baseUrl + '/delete/' + recordId)
+}

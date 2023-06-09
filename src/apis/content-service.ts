@@ -1,7 +1,5 @@
-import axios from 'axios'
 import { File, FileType } from '../types/clipboard'
-
-const baseUrl = 'http://UniclipLoadBalenciaga-a4675bdbd4a90d2c.elb.eu-north-1.amazonaws.com:2000'
+import axios from 'axios'
 
 export const uploadFile = async (userId: string, file: File, type: FileType): Promise<string> => {
 	const form = new FormData()
@@ -9,12 +7,12 @@ export const uploadFile = async (userId: string, file: File, type: FileType): Pr
 	form.append('file', file.blob!, file.name)
 	form.append('type', type)
 
-	const res = await axios.post(baseUrl + '/store', form)
+	const res = await axios.post(process.env.CONTENT_API_URL + '/store', form)
 	return res.data
 }
 
 export const downloadFile = async (contentId: string): Promise<[string, NodeJS.ReadableStream]> => {
-	const res = await axios.get(baseUrl + '/fetch/' + contentId, { responseType: 'stream' })
+	const res = await axios.get(process.env.CONTENT_API_URL + '/fetch/' + contentId, { responseType: 'stream' })
 
 	const disposition = res.headers['content-disposition']
 	const params = disposition.split(';')

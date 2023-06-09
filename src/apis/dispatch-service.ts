@@ -3,12 +3,10 @@ import { Record } from '../types/clipboard'
 import { clipboardManager, start, stop } from '../main/clipboard'
 import { getValue, setValue } from '../main/handlers/store-handler'
 
-const baseUrl = 'ws://UniclipLoadBalenciaga-a4675bdbd4a90d2c.elb.eu-north-1.amazonaws.com:8000'
-
 let client: WebSocket | null
 
 export const connect = (userId: string) => {
-	client = new WebSocket(baseUrl + '/' + userId)
+	client = new WebSocket(process.env.DISPATCH_SERVICE_URL + '/' + userId)
 	client.on('message', async message => {
 		const data = JSON.parse(message.toString()) as Record
 		const record = await clipboardManager.writeClipboard(data)

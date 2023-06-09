@@ -8,6 +8,8 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 
 require('electron-squirrel-startup') && app.quit()
 
+require('dotenv').config()
+
 const createWindow = (): void => {
 	window = new BrowserWindow({
 		height: 600,

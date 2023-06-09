@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { File, FileType } from '../types/clipboard'
 
-const baseUrl = 'http://localhost:2000'
+const baseUrl = 'http://UniclipLoadBalenciaga-a4675bdbd4a90d2c.elb.eu-north-1.amazonaws.com:2000'
 
 export const uploadFile = async (userId: string, file: File, type: FileType): Promise<string> => {
 	const form = new FormData()

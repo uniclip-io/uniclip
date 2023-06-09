@@ -1,7 +1,7 @@
 import Clipboard, { Record } from '../types/clipboard'
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:4000'
+const baseUrl = 'http://UniclipLoadBalenciaga-a4675bdbd4a90d2c.elb.eu-north-1.amazonaws.com:4000'
 
 export const postClipboard = async (userId: string, clipboard: Clipboard): Promise<Record> => {
 	const { content, type } = clipboard

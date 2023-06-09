@@ -3,7 +3,7 @@ import { Record } from '../types/clipboard'
 import { clipboardManager, start, stop } from '../main/clipboard'
 import { getValue, setValue } from '../main/handlers/store-handler'
 
-const baseUrl = 'ws://localhost:8000'
+const baseUrl = 'ws://UniclipLoadBalenciaga-a4675bdbd4a90d2c.elb.eu-north-1.amazonaws.com:8000'
 
 let client: WebSocket | null
 

@@ -22,7 +22,6 @@ const createWindow = (): void => {
 	})
 
 	window.setMenuBarVisibility(false)
-
 	window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 	// window.webContents.openDevTools({ mode: 'detach' })
 

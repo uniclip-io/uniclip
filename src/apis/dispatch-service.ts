@@ -10,8 +10,11 @@ export const connect = (userId: string) => {
 	client.on('message', async message => {
 		const data = JSON.parse(message.toString()) as Record
 		const record = await clipboardManager.writeClipboard(data)
-		const history = getValue<Record[]>('clipboard') ?? []
-		setValue('clipboard', [...history, record])
+
+		if (record) {
+			const history = getValue<Record[]>('clipboard') ?? []
+			setValue('clipboard', [...history, record])
+		}
 	})
 	start(userId, 100) // TODO - review
 }

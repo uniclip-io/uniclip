@@ -68,50 +68,48 @@ export default class ClipboardManager {
 		}
 	}
 
-	public async writeClipboard(record: Record): Promise<Record> {
+	public async writeClipboard(record: Record): Promise<Record | undefined> {
 		if (record.type !== 'text') {
 			await fs.emptyDir(this.tempDir)
 			const contentId = record.content as string
-			const [name, res] = await downloadFile(contentId)
+			const data = await downloadFile(contentId)
 
-			const stream = unzipper.Extract({ path: this.tempDir })
+			if (data) {
+				const [name, res] = data
 
-			stream.on('close', () => {
-				const paths = fs
-					.readdirSync(this.tempDir)
-					.filter(n => n !== '.DS_Store')
-					.map(n => path.join(this.tempDir, n))
+				const stream = unzipper.Extract({ path: this.tempDir })
 
-				clipboardFiles.writeFilePaths(paths)
-				this.previous = clipboard.readText()
-			})
-			res.pipe(stream)
+				stream.on('close', () => {
+					const paths = fs
+						.readdirSync(this.tempDir)
+						.filter(n => n !== '.DS_Store')
+						.map(n => path.join(this.tempDir, n))
 
-			return {
-				...record,
-				content: {
-					name,
-					contentId
+					clipboardFiles.writeFilePaths(paths)
+					this.previous = clipboard.readText()
+				})
+				res.pipe(stream)
+
+				return {
+					...record,
+					content: {
+						name,
+						contentId
+					}
 				}
+			} else {
+				clipboard.writeText(record.content as string)
+				this.previous = clipboard.readText()
+				return record
 			}
-		} else {
-			clipboard.writeText(record.content as string)
-			this.previous = clipboard.readText()
-			return record
 		}
 	}
 
 	private getFileRecordType(files: string[]): FileType {
-		return files.length > 1
-			? 'diverse'
-			: fs.lstatSync(files[0]).isDirectory()
-			? 'folder'
-			: 'file'
+		return files.length > 1 ? 'diverse' : fs.lstatSync(files[0]).isDirectory() ? 'folder' : 'file'
 	}
 
 	private getFileRecordName(type: FileType, files: string[]): string {
-		return type === 'diverse'
-			? files.map(f => path.basename(f)).join(', ')
-			: path.basename(files[0])
+		return type === 'diverse' ? files.map(f => path.basename(f)).join(', ') : path.basename(files[0])
 	}
 }

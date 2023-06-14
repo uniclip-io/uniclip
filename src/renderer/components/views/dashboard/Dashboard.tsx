@@ -1,22 +1,16 @@
 import React from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
-import Clipboard from './Clipboard'
-import Devices from './Devices'
-import Settings from './Settings'
+import ClipboardHistory from '../../panels/ClipboardHistory'
+import { useStore } from '../../../context/store-provider'
 
 export default () => {
+	const { store } = useStore()
+
 	return (
 		<div>
-			<div>
-				<Link to="/dashboard/">clipboard</Link>
-				<Link to="/dashboard/devices">devices</Link>
-				<Link to="/dashboard/settings">settings</Link>
-			</div>
-			<Routes>
-				<Route path="/" element={<Clipboard />} />
-				<Route path="/devices" element={<Devices />} />
-				<Route path="/settings" element={<Settings />} />
-			</Routes>
+			<div>{store.user?.name}</div>
+			<div>{store.user?.id}</div>
+			<button onClick={() => window.electron.logout()}>logout</button>
+			<ClipboardHistory />
 		</div>
 	)
 }

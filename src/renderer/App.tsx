@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { useStore } from './context/store-provider'
 import { Routes, Route, useNavigate } from 'react-router-dom'
-import Dashboard from './components/views/dashboard/Dashboard'
 import Login from './components/views/auth/Login'
 import Splash from './components/views/Splash'
 import Legal from './components/views/legal/Legal'
+import Dashboard from './components/views/dashboard/Dashboard'
 
 export default () => {
 	const { store, isLoading } = useStore()
@@ -24,7 +24,7 @@ export default () => {
 		<Routes>
 			<Route path="/" element={<Splash />} />
 			<Route path="/login" element={<Login />} />
-			<Route path="/dashboard/*" element={<Dashboard />} />
+			<Route path="/dashboard" element={<Dashboard />} />
 			<Route path="/legal/*" element={<Legal />} />
 		</Routes>
 	)

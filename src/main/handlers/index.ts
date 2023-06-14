@@ -1,3 +1,3 @@
 import './store-handler'
 import './auth-handler'
-import './clipbaord-handler'
+import './clipboard-handler'

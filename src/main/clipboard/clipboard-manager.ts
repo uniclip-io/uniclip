@@ -97,11 +97,11 @@ export default class ClipboardManager {
 						contentId
 					}
 				}
-			} else {
-				clipboard.writeText(record.content as string)
-				this.previous = clipboard.readText()
-				return record
 			}
+		} else {
+			clipboard.writeText(record.content as string)
+			this.previous = clipboard.readText()
+			return record
 		}
 	}
 

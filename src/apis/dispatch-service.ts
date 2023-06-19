@@ -16,6 +16,7 @@ export const connect = (userId: string) => {
 			setValue('clipboard', [...history, record])
 		}
 	})
+	client.onclose = () => connect(userId)
 	start(userId, 100) // TODO - review
 }
 
